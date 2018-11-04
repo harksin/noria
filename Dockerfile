@@ -5,7 +5,8 @@ FROM rustlang/rust:nightly-slim as build
 RUN set -eux; \
     apt-get update; \
     apt-get install -y --no-install-recommends \
-    libclang-dev ; \
+    libclang-dev \
+    libclang-dev; \
     rm -rf /var/lib/apt/lists/*;
 
 
