@@ -1,53 +1,29 @@
 # select build image
-FROM rust:1.30.0 as build
+FROM rustlang/rust:nightly-slim as build
 
-# create a new empty shell project
-RUN USER=root cargo new --bin noria
-WORKDIR /noria
+
+RUN set -eux; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    libclang-dev ; \
+    rm -rf /var/lib/apt/lists/*;
+
 
 #create a new empty shell project
 RUN USER=root cargo new --bin noria
-WORKDIR /noria/noria
-
-# copy over your manifests
-COPY ./noria/Cargo.toml ./Cargo.toml
-
-# this build step will cache your dependencies
-RUN cargo build --release
-RUN rm src/*.rs
-
-# copy your source tree
-COPY ./noria/src ./src
-
-
-# create a new empty shell project
-RUN USER=root cargo new --bin noria-server
-WORKDIR /noria/noria-server
-
-# copy over your manifests
-COPY ./noria-server/Cargo.toml ./Cargo.toml
-
-# this build step will cache your dependencies
-RUN cargo build --release
-RUN rm src/*.rs
-
-# copy your source tree
-COPY ./noria-server/src ./src
-
-
-
 WORKDIR /noria
-# copy over your manifests
+
 COPY ./Cargo.lock ./Cargo.lock
-COPY ./Cargo.toml ./Cargo.toml
+COPY ./docker.toml ./Cargo.toml
+COPY ./noria-server  ./noria-server
+COPY ./noria  ./noria
 
 
 # build for release
-RUN rm ./target/release/deps/my_project*
 RUN cargo build --release --bin noria-server
 
 # our final base
-FROM rust:1.30.0
+FROM rustlang/rust:nightly-slim
 
 # copy the build artifact from the build stage
 COPY --from=build /noria/target/release/noria-server .
