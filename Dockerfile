@@ -1,13 +1,28 @@
 # select build image
-FROM rustlang/rust:nightly-slim as build
+FROM rustlang/rust:nightly as build
+
+RUN apt-get update
+RUN apt-get install -y software-properties-common
+RUN apt-add-repository "deb http://apt.llvm.org/jessie/ llvm-toolchain-jessie-6.0 main"
+
 
 
 RUN set -eux; \
     apt-get update; \
-    apt-get install -y --no-install-recommends \
-    libclang-dev \
-    libclang-dev; \
-    rm -rf /var/lib/apt/lists/*;
+    apt-get install -y --no-install-recommends liblz4-dev;
+#RUN wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key | apt-key add -
+#RUN apt-add-repository "deb http://apt.llvm.org/xenial/ llvm-toolchain-xenial-6.0 main"
+#    libclang-dev \
+#RUN apt-get install -y libjsoncpp0
+#RUN apt-get install -y libstdc++-4.9-dev
+#RUN apt-get install -y libgcc-4.9-dev
+#RUN apt-get install -y libobjc-4.9-dev
+#RUN apt-get install -y llvm-6.0-dev
+#RUN apt-get install -y python
+#RUN apt-get install -y libomp-dev
+#RUN apt-get install -y clang-6.0
+#RUN apt-get install -y libclang-6.0-dev
+
 
 
 #create a new empty shell project
