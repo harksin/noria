@@ -16,22 +16,14 @@ before_cache:
   - rm -rf /home/travis/.cargo/registry
   - rm -rf $TRAVIS_BUILD_DIR/target/incremental
 
-#release
 
-stages:
-  if: branch = build_docker_image
-  name: release
-  services:
-    - docker
-  script:
-    - cargo build --release --bin noria-server
-#  TRAVIS_TAG
-  before_install:
-    - docker build -t harksin/noria:latest .
 #master
 deploy:
   provider: script
-  script: bash docker_push
+  script:
+    - cargo build --release --bin noria-server
+    - docker build -t harksin/noria:latest .
+    - bash docker_push
   on:
     #master
     branch: build_docker_image
