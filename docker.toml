@@ -1,0 +1,8 @@
+[workspace]
+members = [
+	"noria",
+	"noria-server",
+]
+
+[profile.release]
+debug=true
